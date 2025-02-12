@@ -1,4 +1,4 @@
-import { IsString, IsEmail, MinLength, MaxLength } from 'class-validator';
+import { IsString, IsEmail, MinLength, MaxLength, IsNumber } from 'class-validator';
 
 export class SetUserDTO {
   @IsString()
@@ -16,6 +16,6 @@ export class SetUserDTO {
   @IsEmail()
   email?: string;
 
-  @IsString()
-  profession?: string;
+  @IsNumber()
+  role: number;
 }
