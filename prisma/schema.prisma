@@ -25,3 +25,13 @@ model Role {
   name       String @unique
   users      User[]
 }
+
+model MaritalStatus {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+}
+
+model EducationLevel {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+}
