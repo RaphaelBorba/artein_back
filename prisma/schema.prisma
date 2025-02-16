@@ -20,6 +20,68 @@ model User {
   role       Role     @relation(fields: [roleId], references: [id], onDelete: Restrict)
 }
 
+model GeneralRegister {
+  id                 Int      @id @default(autoincrement())
+  fullName           String   
+  photo             String?  
+  personType        String   @default("pf") // 'pf' para Pessoa Física, 'pj' para Pessoa Jurídica
+  birthDate         DateTime?
+  nationality       String?
+  placeOfBirth      String?
+
+  maritalStatusId   Int?     
+  maritalStatus     MaritalStatus? @relation(fields: [maritalStatusId], references: [id], onDelete: SetNull)
+
+  cpf              String?  @db.Char(11)
+  cnpj             String?  @db.Char(14)
+  companyName      String?
+
+  educationLevelId  Int?
+  educationLevel    EducationLevel? @relation(fields: [educationLevelId], references: [id], onDelete: SetNull)
+
+  profession       String?
+  workplace       String?
+  currentJob      String?
+
+  phoneNumber      String?  @db.VarChar(15) // Pode armazenar formatos diferentes
+  email           String? 
+  firstContactDate DateTime?
+
+  cep             String?  @db.Char(8)
+  address         String?
+  city           String?
+  neighborhood   String?
+  state         String?
+  complement    String?
+  country       String?
+  countryCode   Int?
+
+  religion       String?
+
+  genderId       Int?
+  gender         Gender? @relation(fields: [genderId], references: [id], onDelete: SetNull)
+
+  status        Boolean @default(true)
+  isPatient     Boolean @default(false)
+  isStudent     Boolean @default(false)
+  interestedInCourses Boolean @default(false)
+
+  receiveInfoMethodId Int?
+  receiveInfoMethod   CommunicationMethod? @relation(fields: [receiveInfoMethodId], references: [id], onDelete: SetNull)
+
+  additionalInfo  String?
+
+  referralSourceId Int?
+  referralSource  ReferralSource? @relation(fields: [referralSourceId], references: [id], onDelete: SetNull)
+
+  otherReferral   String?
+  referredByName String?
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+
 model Role {
   id         Int    @id @default(autoincrement())
   name       String @unique
@@ -29,9 +91,34 @@ model Role {
 model MaritalStatus {
   id    Int    @id @default(autoincrement())
   name  String @unique
+
+  GeneralRegister GeneralRegister[]
 }
 
 model EducationLevel {
   id    Int    @id @default(autoincrement())
   name  String @unique
+
+  GeneralRegister GeneralRegister[]
+}
+
+model ReferralSource {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+
+  GeneralRegister GeneralRegister[]
+}
+
+model CommunicationMethod {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+
+  GeneralRegister GeneralRegister[]
+}
+
+model Gender {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+
+  GeneralRegister GeneralRegister[]
 }

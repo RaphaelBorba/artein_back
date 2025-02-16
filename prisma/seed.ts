@@ -40,6 +40,40 @@ async function main() {
     skipDuplicates: true, // Evita duplicatas
   });
 
+  await prisma.referralSource.createMany({
+    data: [
+      { name: 'Email' },
+      { name: 'Facebook' },
+      { name: 'Google' },
+      { name: 'Indicação' },
+      { name: 'Instagram' },
+      { name: 'Outro' },
+      { name: 'Site' },
+      { name: 'Whatsapp' },
+      { name: 'Youtube' }
+    ],
+    skipDuplicates: true,
+  });
+
+  await prisma.communicationMethod.createMany({
+    data: [
+      { name: 'Email' },
+      { name: 'WhatsApp' },
+      { name: 'WhatsApp e Email'}
+    ],
+    skipDuplicates: true,
+  });
+
+  // Inserir sexos/gêneros
+  await prisma.gender.createMany({
+    data: [
+      { name: 'Masculino' },
+      { name: 'Feminino' },
+      { name: 'Prefiro não informar' }
+    ],
+    skipDuplicates: true,
+  });
+
   console.log('Estados Civis e Escolaridade cadastrados com sucesso!');
 }
 
