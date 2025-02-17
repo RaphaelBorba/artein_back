@@ -19,6 +19,11 @@ export class GeneralRegisterController {
     return this.service.findAll();
   }
 
+  @Get('communication-method')
+  getCommunicationMethod(){
+    return this.service.getCommunicationMethod()
+  }
+
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.service.findOne(id);

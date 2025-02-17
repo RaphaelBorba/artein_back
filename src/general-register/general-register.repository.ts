@@ -25,4 +25,8 @@ export class GeneralRegisterRepository {
   async delete(id: number) {
     return this.prisma.generalRegister.delete({ where: { id } });
   }
+
+  async getCommunicationMethod(){
+    return this.prisma.communicationMethod.findMany()
+  }
 }

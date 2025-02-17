@@ -77,4 +77,8 @@ export class GeneralRegisterService {
 
         return this.repository.delete(id);
     }
+
+    async getCommunicationMethod(){
+        return this.repository.getCommunicationMethod()
+    }
 }
