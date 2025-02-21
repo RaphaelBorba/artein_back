@@ -4,14 +4,22 @@ import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class GeneralRegisterRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(data: Prisma.GeneralRegisterCreateInput) {
     return this.prisma.generalRegister.create({ data });
   }
 
   async findAll() {
-    return this.prisma.generalRegister.findMany();
+    return this.prisma.generalRegister.findMany({
+      include: {
+        educationLevel: true,
+        gender: true,
+        maritalStatus: true,
+        receiveInfoMethod: true,
+        referralSource: true
+      }
+    });
   }
 
   async findOne(id: number) {
@@ -26,7 +34,7 @@ export class GeneralRegisterRepository {
     return this.prisma.generalRegister.delete({ where: { id } });
   }
 
-  async getCommunicationMethod(){
+  async getCommunicationMethod() {
     return this.prisma.communicationMethod.findMany()
   }
 }
