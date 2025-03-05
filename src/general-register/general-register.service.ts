@@ -3,6 +3,8 @@ import { GeneralRegisterRepository } from './general-register.repository';
 import { CreateGeneralRegisterDto } from './dto/create-general-register.dto';
 import { UpdateGeneralRegisterDto } from './dto/update-general-register.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { calculateAge } from 'src/utils/calculateAge';
+import { GeneralRegisterFilter } from './types/filter';
 
 @Injectable()
 export class GeneralRegisterService {
@@ -51,8 +53,24 @@ export class GeneralRegisterService {
         });
     }
 
-    async findAll() {
-        return this.repository.findAll();
+    async findAll(filters: GeneralRegisterFilter) {
+        const resp = await this.repository.findAll(filters);
+
+        // Process age calculation
+        const processedRegisters = resp.map(register => {
+            let age = null;
+            if (register.birthDate) {
+                const birthDate = register.birthDate instanceof Date
+                    ? register.birthDate
+                    : new Date(register.birthDate);
+                if (!isNaN(birthDate.getTime())) {
+                    age = calculateAge(birthDate.toISOString());
+                }
+            }
+            return { ...register, age };
+        });
+
+        return processedRegisters;
     }
 
     async findOne(id: number) {
@@ -73,12 +91,12 @@ export class GeneralRegisterService {
 
         const existRegister = await this.repository.findOne(id)
 
-        if(!existRegister) throw new NotFoundException("Registro não encontrado!")
+        if (!existRegister) throw new NotFoundException("Registro não encontrado!")
 
         return this.repository.delete(id);
     }
 
-    async getCommunicationMethod(){
+    async getCommunicationMethod() {
         return this.repository.getCommunicationMethod()
     }
 }

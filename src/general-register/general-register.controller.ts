@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards, Query } from '@nestjs/common';
 import { GeneralRegisterService } from './general-register.service';
 import { CreateGeneralRegisterDto } from './dto/create-general-register.dto';
 import { UpdateGeneralRegisterDto } from './dto/update-general-register.dto';
@@ -7,7 +7,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 @UseGuards(JwtAuthGuard)
 @Controller('general-register')
 export class GeneralRegisterController {
-  constructor(private readonly service: GeneralRegisterService) {}
+  constructor(private readonly service: GeneralRegisterService) { }
 
   @Post()
   create(@Body() data: CreateGeneralRegisterDto) {
@@ -15,12 +15,26 @@ export class GeneralRegisterController {
   }
 
   @Get()
-  findAll() {
-    return this.service.findAll();
+  findAll(
+    @Query('name') name?: string,
+    @Query('cpf') cpf?: string,
+    @Query('cnpj') cnpj?: string,
+    @Query('phoneNumber') phoneNumber?: string,
+    @Query('interestedInCourses') interestedInCourses?: string,
+    @Query('receiveInfoMethodId') receiveInfoMethodId?: string,
+  ) {
+    return this.service.findAll({
+      name,
+      cpf,
+      cnpj,
+      phoneNumber,
+      interestedInCourses: interestedInCourses ? interestedInCourses === 'true' : undefined,
+      receiveInfoMethodId: receiveInfoMethodId ? Number(receiveInfoMethodId) : undefined,
+    });
   }
 
   @Get('communication-method')
-  getCommunicationMethod(){
+  getCommunicationMethod() {
     return this.service.getCommunicationMethod()
   }
 

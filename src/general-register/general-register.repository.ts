@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
+import { GeneralRegisterFilter } from './types/filter';
 
 @Injectable()
 export class GeneralRegisterRepository {
@@ -10,15 +11,23 @@ export class GeneralRegisterRepository {
     return this.prisma.generalRegister.create({ data });
   }
 
-  async findAll() {
+  async findAll(filters: GeneralRegisterFilter) {
     return this.prisma.generalRegister.findMany({
+      where: {
+        fullName: filters.name ? { contains: filters.name, mode: 'insensitive' } : undefined,
+        cpf: filters.cpf ? { equals: filters.cpf } : undefined,
+        cnpj: filters.cnpj ? { equals: filters.cnpj } : undefined,
+        phoneNumber: filters.phoneNumber ? { contains: filters.phoneNumber } : undefined,
+        interestedInCourses: filters.interestedInCourses !== undefined ? filters.interestedInCourses : undefined,
+        receiveInfoMethodId: filters.receiveInfoMethodId ? { equals: filters.receiveInfoMethodId } : undefined,
+      },
       include: {
         educationLevel: true,
         gender: true,
         maritalStatus: true,
         receiveInfoMethod: true,
-        referralSource: true
-      }
+        referralSource: true,
+      },
     });
   }
 
