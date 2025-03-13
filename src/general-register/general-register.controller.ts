@@ -38,6 +38,26 @@ export class GeneralRegisterController {
     return this.service.getCommunicationMethod()
   }
 
+  @Get('marital-status')
+  getMaritalStatus() {
+    return this.service.getMaritalStatus()
+  }
+
+  @Get('education-level')
+  getEducationLevel() {
+    return this.service.getEducationLevel()
+  }
+
+  @Get('gender')
+  getGender() {
+    return this.service.getGender()
+  }
+
+  @Get('referral-source')
+  getReferralSource() {
+    return this.service.getReferralSource()
+  }
+
   @Get(':id')
   findOne(@Param('id') id: number) {
     return this.service.findOne(id);

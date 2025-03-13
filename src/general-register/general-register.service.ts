@@ -97,6 +97,32 @@ export class GeneralRegisterService {
     }
 
     async getCommunicationMethod() {
-        return this.repository.getCommunicationMethod()
+        const resp = await this.repository.getCommunicationMethod()
+        const newMap = resp.map((row) => ({ value: String(row.id), label: row.name }))
+        return newMap
+    }
+
+    async getMaritalStatus() {
+        const resp = await this.repository.getMaritalStatus()
+        const newMap = resp.map((row) => ({ value: String(row.id), label: row.name }))
+        return newMap
+    }
+
+    async getEducationLevel() {
+        const resp = await this.repository.getEducationLevel()
+        const newMap = resp.map((row) => ({ value: String(row.id), label: row.name }))
+        return newMap
+    }
+
+    async getGender() {
+        const resp = await this.repository.getGender()
+        const newMap = resp.map((row) => ({ value: String(row.id), label: row.name }))
+        return newMap
+    }
+
+    async getReferralSource() {
+        const resp = await this.repository.getReferralSource()
+        const newMap = resp.map((row) => ({ value: String(row.id), label: row.name }))
+        return newMap
     }
 }

@@ -46,4 +46,20 @@ export class GeneralRegisterRepository {
   async getCommunicationMethod() {
     return this.prisma.communicationMethod.findMany()
   }
+
+  async getMaritalStatus() {
+    return this.prisma.maritalStatus.findMany()
+  }
+  
+  async getEducationLevel() {
+    return this.prisma.educationLevel.findMany()
+  }
+
+  async getGender() {
+    return this.prisma.gender.findMany()
+}
+
+async getReferralSource() {
+    return this.prisma.referralSource.findMany()
+}
 }
