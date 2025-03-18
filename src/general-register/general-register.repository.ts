@@ -8,7 +8,17 @@ export class GeneralRegisterRepository {
   constructor(private prisma: PrismaService) { }
 
   async create(data: Prisma.GeneralRegisterCreateInput) {
-    return this.prisma.generalRegister.create({ data });
+    console.log(data)
+    const processData: Prisma.GeneralRegisterCreateInput = {
+      ...data,
+      status: data.status === undefined ? undefined : data.status ? true : false,
+      isPatient: data.isPatient === undefined ? undefined : data.isPatient ? true : false,
+      isStudent: data.isStudent === undefined ? undefined : data.isStudent ? true : false,
+      interestedInCourses: data.interestedInCourses === undefined ? undefined : data.interestedInCourses ? true : false,
+      countryCode: data.countryCode || undefined,
+    }
+    console.log(processData)
+    return this.prisma.generalRegister.create({ data: processData });
   }
 
   async findAll(filters: GeneralRegisterFilter) {
@@ -50,16 +60,16 @@ export class GeneralRegisterRepository {
   async getMaritalStatus() {
     return this.prisma.maritalStatus.findMany()
   }
-  
+
   async getEducationLevel() {
     return this.prisma.educationLevel.findMany()
   }
 
   async getGender() {
     return this.prisma.gender.findMany()
-}
+  }
 
-async getReferralSource() {
+  async getReferralSource() {
     return this.prisma.referralSource.findMany()
-}
+  }
 }

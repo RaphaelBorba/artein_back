@@ -1,11 +1,12 @@
+import { Transform, Type } from 'class-transformer';
 import {
     IsString,
     IsOptional,
     IsEmail,
-    IsBoolean,
-    IsNumber,
     IsISO8601,
     MaxLength,
+    IsNumber,
+    IsBoolean,
   } from 'class-validator';
   
   export class CreateGeneralRegisterDto {
@@ -33,6 +34,7 @@ import {
     placeOfBirth?: string;
   
     @IsOptional()
+    @Type(() => Number)
     @IsNumber()
     maritalStatusId?: number;
   
@@ -49,6 +51,7 @@ import {
     companyName?: string;
   
     @IsOptional()
+    @Type(() => Number)
     @IsNumber()
     educationLevelId?: number;
   
@@ -73,7 +76,7 @@ import {
     email?: string;
   
     @IsOptional()
-    @IsISO8601() // ✅ Correct format for date
+    @IsISO8601()
     firstContactDate?: string;
   
     @IsOptional()
@@ -105,6 +108,7 @@ import {
     country?: string;
   
     @IsOptional()
+    @Type(() => Number)
     @IsNumber()
     countryCode?: number;
   
@@ -113,22 +117,52 @@ import {
     religion?: string;
   
     @IsOptional()
+    @Type(() => Number)
     @IsNumber()
     genderId?: number;
-  
-    @IsBoolean()
+
+    @IsOptional()
+    @Transform(({ value }) => {
+      if (typeof value === 'string') {
+        return value.toLowerCase() === 'true';
+      }
+      return value;
+    })
+    @IsBoolean({ message: 'isActive must be a boolean' })
     status: boolean;
   
-    @IsBoolean()
+    @IsOptional()
+    @Transform(({ value }) => {
+      if (typeof value === 'string') {
+        return value.toLowerCase() === 'true';
+      }
+      return value;
+    })
+    @IsBoolean({ message: 'isActive must be a boolean' })
     isPatient: boolean;
   
-    @IsBoolean()
+    @IsOptional()
+    @Transform(({ value }) => {
+      if (typeof value === 'string') {
+        return value.toLowerCase() === 'true';
+      }
+      return value;
+    })
+    @IsBoolean({ message: 'isActive must be a boolean' })
     isStudent: boolean;
   
-    @IsBoolean()
+    @IsOptional()
+    @Transform(({ value }) => {
+      if (typeof value === 'string') {
+        return value.toLowerCase() === 'true';
+      }
+      return value;
+    })
+    @IsBoolean({ message: 'isActive must be a boolean' })
     interestedInCourses: boolean;
   
     @IsOptional()
+    @Type(() => Number)
     @IsNumber()
     receiveInfoMethodId?: number;
   
@@ -137,6 +171,7 @@ import {
     additionalInfo?: string;
   
     @IsOptional()
+    @Type(() => Number)
     @IsNumber()
     referralSourceId?: number;
   
