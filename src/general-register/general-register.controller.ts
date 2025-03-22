@@ -15,14 +15,19 @@ export class GeneralRegisterController {
   }
 
   @Get()
-  findAll(
+  async findAll(
     @Query('name') name?: string,
     @Query('cpf') cpf?: string,
     @Query('cnpj') cnpj?: string,
     @Query('phoneNumber') phoneNumber?: string,
     @Query('interestedInCourses') interestedInCourses?: string,
     @Query('receiveInfoMethodId') receiveInfoMethodId?: string,
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10'
   ) {
+    const pageNumber = parseInt(page, 10);
+    const limitNumber = parseInt(limit, 10);
+
     return this.service.findAll({
       name,
       cpf,
@@ -30,6 +35,10 @@ export class GeneralRegisterController {
       phoneNumber,
       interestedInCourses: interestedInCourses ? interestedInCourses === 'true' : undefined,
       receiveInfoMethodId: receiveInfoMethodId ? Number(receiveInfoMethodId) : undefined,
+      skip: (pageNumber - 1) * limitNumber,
+      take: limitNumber,
+      page: pageNumber,
+      limit: limitNumber,
     });
   }
 

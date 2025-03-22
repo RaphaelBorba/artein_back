@@ -8,7 +8,6 @@ export class GeneralRegisterRepository {
   constructor(private prisma: PrismaService) { }
 
   async create(data: Prisma.GeneralRegisterCreateInput) {
-    console.log(data)
     const processData: Prisma.GeneralRegisterCreateInput = {
       ...data,
       status: data.status === undefined ? undefined : data.status ? true : false,
@@ -17,12 +16,34 @@ export class GeneralRegisterRepository {
       interestedInCourses: data.interestedInCourses === undefined ? undefined : data.interestedInCourses ? true : false,
       countryCode: data.countryCode || undefined,
     }
-    console.log(processData)
     return this.prisma.generalRegister.create({ data: processData });
   }
 
-  async findAll(filters: GeneralRegisterFilter) {
+  async findAll(filters: GeneralRegisterFilter & { skip?: number; take?: number }) {
+    const { skip, take, ...otherFilters } = filters;
     return this.prisma.generalRegister.findMany({
+      where: {
+        fullName: otherFilters.name ? { contains: otherFilters.name, mode: 'insensitive' } : undefined,
+        cpf: otherFilters.cpf ? { equals: otherFilters.cpf } : undefined,
+        cnpj: otherFilters.cnpj ? { equals: otherFilters.cnpj } : undefined,
+        phoneNumber: otherFilters.phoneNumber ? { contains: otherFilters.phoneNumber } : undefined,
+        interestedInCourses: otherFilters.interestedInCourses !== undefined ? otherFilters.interestedInCourses : undefined,
+        receiveInfoMethodId: otherFilters.receiveInfoMethodId ? { equals: otherFilters.receiveInfoMethodId } : undefined,
+      },
+      skip,
+      take,
+      include: {
+        educationLevel: true,
+        gender: true,
+        maritalStatus: true,
+        receiveInfoMethod: true,
+        referralSource: true,
+      },
+    });
+  }
+
+  async count(filters: GeneralRegisterFilter) {
+    return this.prisma.generalRegister.count({
       where: {
         fullName: filters.name ? { contains: filters.name, mode: 'insensitive' } : undefined,
         cpf: filters.cpf ? { equals: filters.cpf } : undefined,
@@ -30,13 +51,6 @@ export class GeneralRegisterRepository {
         phoneNumber: filters.phoneNumber ? { contains: filters.phoneNumber } : undefined,
         interestedInCourses: filters.interestedInCourses !== undefined ? filters.interestedInCourses : undefined,
         receiveInfoMethodId: filters.receiveInfoMethodId ? { equals: filters.receiveInfoMethodId } : undefined,
-      },
-      include: {
-        educationLevel: true,
-        gender: true,
-        maritalStatus: true,
-        receiveInfoMethod: true,
-        referralSource: true,
       },
     });
   }

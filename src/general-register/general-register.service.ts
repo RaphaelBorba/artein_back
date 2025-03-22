@@ -53,11 +53,21 @@ export class GeneralRegisterService {
         });
     }
 
-    async findAll(filters: GeneralRegisterFilter) {
-        const resp = await this.repository.findAll(filters);
+    async findAll(filters: GeneralRegisterFilter & { skip?: number; take?: number; page: number; limit: number }) {
+        const { skip, take, page, limit, ...otherFilters } = filters;
 
-        // Process age calculation
-        const processedRegisters = resp.map(register => {
+        const [records, totalCount] = await Promise.all([
+            this.repository.findAll({
+                ...otherFilters,
+                skip,
+                take,
+            }),
+            this.repository.count({
+                ...otherFilters,
+            })
+        ]);
+
+        const processedRegisters = records.map(register => {
             let age = null;
             if (register.birthDate) {
                 const birthDate = register.birthDate instanceof Date
@@ -70,8 +80,21 @@ export class GeneralRegisterService {
             return { ...register, age };
         });
 
-        return processedRegisters;
+        const totalPages = Math.ceil(totalCount / limit);
+
+        return {
+            records: processedRegisters,
+            pagination: {
+                page,
+                pageSize: limit,
+                totalPages,
+                totalCount,
+                hasNextPage: page < totalPages,
+                hasPreviousPage: page > 1,
+            }
+        };
     }
+
 
     async findOne(id: number) {
         return this.repository.findOne(id);

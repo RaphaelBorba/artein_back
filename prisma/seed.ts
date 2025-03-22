@@ -74,7 +74,7 @@ async function main() {
     skipDuplicates: true,
   });
 
-  console.log('Estados Civis e Escolaridade cadastrados com sucesso!');
+  console.log('Seeds cadastrados com sucesso!');
 }
 
 main()
