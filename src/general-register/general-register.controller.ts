@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Param, Patch, Delete, UseGuards, Query } from '@nestjs/common';
 import { GeneralRegisterService } from './general-register.service';
 import { CreateGeneralRegisterDto } from './dto/create-general-register.dto';
-import { UpdateGeneralRegisterDto } from './dto/update-general-register.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
@@ -22,6 +21,8 @@ export class GeneralRegisterController {
     @Query('phoneNumber') phoneNumber?: string,
     @Query('interestedInCourses') interestedInCourses?: string,
     @Query('receiveInfoMethodId') receiveInfoMethodId?: string,
+    @Query('isPatient') isPatient?: string,
+    @Query('isStudent') isStudent?: string,
     @Query('page') page: string = '1',
     @Query('limit') limit: string = '10'
   ) {
@@ -33,6 +34,8 @@ export class GeneralRegisterController {
       cpf,
       cnpj,
       phoneNumber,
+      isPatient,
+      isStudent,
       interestedInCourses: interestedInCourses ? interestedInCourses === 'true' : undefined,
       receiveInfoMethodId: receiveInfoMethodId ? Number(receiveInfoMethodId) : undefined,
       skip: (pageNumber - 1) * limitNumber,
@@ -73,7 +76,7 @@ export class GeneralRegisterController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body() data: UpdateGeneralRegisterDto) {
+  update(@Param('id') id: number, @Body() data: CreateGeneralRegisterDto) {
     return this.service.update(id, data);
   }
 

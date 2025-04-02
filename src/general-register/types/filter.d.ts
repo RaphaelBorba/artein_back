@@ -13,4 +13,6 @@ export interface GeneralRegisterFilter extends Partial<IPagination> {
     phoneNumber?: string;
     interestedInCourses?: boolean;
     receiveInfoMethodId?: number;
+    isPatient?: string,
+    isStudent?: string,
 }

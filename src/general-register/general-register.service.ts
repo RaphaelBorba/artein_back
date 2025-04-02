@@ -4,7 +4,7 @@ import { CreateGeneralRegisterDto } from './dto/create-general-register.dto';
 import { UpdateGeneralRegisterDto } from './dto/update-general-register.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { calculateAge } from 'src/utils/calculateAge';
-import { GeneralRegisterFilter } from './types/filter';
+import { GeneralRegisterFilter, IPagination } from './types/filter';
 
 @Injectable()
 export class GeneralRegisterService {
@@ -53,7 +53,7 @@ export class GeneralRegisterService {
         });
     }
 
-    async findAll(filters: GeneralRegisterFilter & { skip?: number; take?: number; page: number; limit: number }) {
+    async findAll(filters: GeneralRegisterFilter & IPagination) {
         const { skip, take, page, limit, ...otherFilters } = filters;
 
         const [records, totalCount] = await Promise.all([
@@ -100,9 +100,9 @@ export class GeneralRegisterService {
         return this.repository.findOne(id);
     }
 
-    async update(id: number, data: UpdateGeneralRegisterDto) {
+    async update(id: number, data: CreateGeneralRegisterDto) {
         await this.validateForeignKeys(data);
-
+        console.log(data)
         return this.repository.update(id, {
             ...data,
             birthDate: this.convertStringToDate(data.birthDate),

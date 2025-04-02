@@ -29,6 +29,8 @@ export class GeneralRegisterRepository {
         phoneNumber: otherFilters.phoneNumber ? { contains: otherFilters.phoneNumber } : undefined,
         interestedInCourses: otherFilters.interestedInCourses !== undefined ? otherFilters.interestedInCourses : undefined,
         receiveInfoMethodId: otherFilters.receiveInfoMethodId ? { equals: otherFilters.receiveInfoMethodId } : undefined,
+        isPatient: otherFilters.isPatient ? true : undefined,
+        isStudent: otherFilters.isStudent ? true : undefined
       },
       skip,
       take,
@@ -60,7 +62,15 @@ export class GeneralRegisterRepository {
   }
 
   async update(id: number, data: Prisma.GeneralRegisterUpdateInput) {
-    return this.prisma.generalRegister.update({ where: { id }, data });
+    const processData: Prisma.GeneralRegisterUpdateInput = {
+      ...data,
+      status: data.status === undefined ? null : data.status ? true : false,
+      isPatient: data.isPatient === undefined ? null : data.isPatient ? true : false,
+      isStudent: data.isStudent === undefined ? null : data.isStudent ? true : false,
+      interestedInCourses: data.interestedInCourses === undefined ? null : data.interestedInCourses ? true : false,
+      countryCode: data.countryCode || undefined,
+    }
+    return this.prisma.generalRegister.update({ where: { id }, data: processData });
   }
 
   async delete(id: number) {
