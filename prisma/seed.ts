@@ -59,7 +59,7 @@ async function main() {
     data: [
       { name: 'Email' },
       { name: 'WhatsApp' },
-      { name: 'WhatsApp e Email'}
+      { name: 'WhatsApp e Email' }
     ],
     skipDuplicates: true,
   });
@@ -73,6 +73,28 @@ async function main() {
     ],
     skipDuplicates: true,
   });
+
+  await prisma.psychologicalDisorders.createMany({
+    data: [
+      { name: "TP" },
+      { name: "AGO" },
+      { name: "DP" },
+      { name: "TOC" },
+      { name: "TAG" },
+      { name: "TB" },
+      { name: "FAS" },
+      { name: "FE" },
+      { name: "TEPT" },
+      { name: "T.Alim" },
+      { name: "T.Pers" },
+      { name: "T.Adic" },
+      { name: "S.P./Esqui" },
+      { name: "T.I" },
+      { name: "TDAH" },
+      { name: "Q.SEX" }
+    ],
+    skipDuplicates: true,
+  })
 
   console.log('Seeds cadastrados com sucesso!');
 }
