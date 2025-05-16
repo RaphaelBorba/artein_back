@@ -32,4 +32,8 @@ export class PatientRepository {
       },
     });
   }
+
+  async getPsychologicalDisorders() {
+    return this.prisma.psychologicalDisorders.findMany()
+  }
 }

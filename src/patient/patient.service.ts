@@ -46,13 +46,23 @@ export class PatientService {
   }
 
   async findOne(id: number) {
-    const patient = await this.repository.findOne({ id });
+    const patient = await this.repository.findOne({ generalRegisterId: id });
 
-    if (!patient) {
-      throw new NotFoundException(`Patient with id ${id} not found`);
+    if (patient) {
+      const generalRegister = patient.generalRegister
+      delete patient.generalRegister
+      delete patient.generalRegisterId
+      return { patient, generalRegister }
+    } else {
+      const generalRegister = await this.GeneralRegisterRepository.findOne(id)
+      return { patient: {}, generalRegister }
     }
+  }
 
-    return patient;
+  async getPsychologicalDisorders() {
+    const resp = await this.repository.getPsychologicalDisorders()
+    const newMap = resp.map((row) => ({ value: String(row.id), label: row.name }))
+    return newMap
   }
 
   private convertStringToDate(dateString?: string): Date | undefined {
