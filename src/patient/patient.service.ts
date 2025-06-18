@@ -33,6 +33,11 @@ export class PatientService {
       ...dto,
       pastPsychiatricTreatmentDate: this.convertStringToDate(dto.pastPsychiatricTreatmentDate),
       currentPsychiatricTreatmentStartDate: this.convertStringToDate(dto.currentPsychiatricTreatmentStartDate),
+      previousPsychotherapyTreatment: dto.previousPsychotherapyTreatment === undefined ? null : dto.previousPsychotherapyTreatment ? true : false,
+      pastPsychiatricTreatment: dto.pastPsychiatricTreatment === undefined ? null : dto.pastPsychiatricTreatment ? true : false,
+      ongoingLegalProcess: dto.ongoingLegalProcess === undefined ? null : dto.ongoingLegalProcess ? true : false,
+      generalMedicalTreatment: dto.generalMedicalTreatment === undefined ? null : dto.generalMedicalTreatment ? true : false,
+      currentPsychiatricTreatment: dto.currentPsychiatricTreatment === undefined ? null : dto.currentPsychiatricTreatment ? true : false,
       psychologicalDisorders: connectDisorders.length
         ? { set: connectDisorders }
         : undefined,
@@ -52,7 +57,15 @@ export class PatientService {
       const generalRegister = patient.generalRegister
       delete patient.generalRegister
       delete patient.generalRegisterId
-      return { patient, generalRegister }
+      const mapped = patient.psychologicalDisorders.map(d => ({
+        value: String(d.id),
+        label: d.name
+      }));
+      const newPatient = {
+        ...patient,
+        psychologicalDisorders: mapped
+      };
+      return { patient: newPatient, generalRegister }
     } else {
       const generalRegister = await this.GeneralRegisterRepository.findOne(id)
       return { patient: {}, generalRegister }
