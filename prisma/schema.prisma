@@ -172,3 +172,11 @@ model PsychologicalDisorders {
 
   Patients Patients[]
 }
+
+model Course {
+  id                Int       @id @default(autoincrement())
+  name              String?
+  description       String?
+  workload          String?
+  price             Decimal?  @db.Decimal(10,2)
+}
