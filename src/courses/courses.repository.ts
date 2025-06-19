@@ -13,8 +13,16 @@ export class CoursesRepository {
     return this.prisma.course.create({ data });
   }
 
-  findAll(): Promise<Course[]> {
-    return this.prisma.course.findMany();
+  async findAll(filters: { skip?: number; take?: number }) {
+    const { skip, take } = filters;
+    return this.prisma.course.findMany({
+      skip,
+      take,
+    });
+  }
+
+  async count() {
+    return this.prisma.course.count();
   }
 
   findOne(id: number): Promise<Course | null> {
