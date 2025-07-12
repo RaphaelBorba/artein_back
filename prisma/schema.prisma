@@ -180,3 +180,39 @@ model Course {
   workload          String?
   price             Decimal?  @db.Decimal(10,2)
 }
+
+
+model CourseClass {
+  id             Int        @id @default(autoincrement())
+  name           String?
+  workload       String?
+  classNumber    String?
+  location       String?
+  sessionDates   DateTime[]
+  startDate      DateTime?
+  endDate        DateTime?
+  startTime      String?
+  endTime        String?
+  daysOfWeek     String[]
+  shift          String?
+  price          Decimal?   @db.Decimal(10,2)
+}
+// JSON CourseClass Exemple:
+// {
+//   "name": "Turma A",
+//   "workload": "40h",
+//   "classNumber": "2025A",
+//   "location": "Sala 101",
+//   "sessionDates": [
+//     "2025-06-02T00:00:00.000Z",
+//     "2025-06-09T00:00:00.000Z",
+//     "2025-06-16T00:00:00.000Z"
+//   ],
+//   "startDate": "2025-06-02T00:00:00.000Z",
+//   "endDate":   "2025-07-21T00:00:00.000Z",
+//   "startTime": "08:00",
+//   "endTime":   "12:00",
+//   "daysOfWeek": ["Mon", "Wed", "Fri"],
+//   "shift":      "morning",
+//   "price":      199.90
+// }
