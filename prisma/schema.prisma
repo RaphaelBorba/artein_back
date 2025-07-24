@@ -81,6 +81,7 @@ model GeneralRegister {
   updatedAt DateTime @updatedAt
 
   Patients Patients[]
+  presenceLists PresenceList[]
 }
 
 model Role {
@@ -179,6 +180,9 @@ model Course {
   description       String?
   workload          String?
   price             Decimal?  @db.Decimal(10,2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 
@@ -196,23 +200,27 @@ model CourseClass {
   daysOfWeek     String[]
   shift          String?
   price          Decimal?   @db.Decimal(10,2)
+
+  presenceLists PresenceList[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
-// JSON CourseClass Exemple:
-// {
-//   "name": "Turma A",
-//   "workload": "40h",
-//   "classNumber": "2025A",
-//   "location": "Sala 101",
-//   "sessionDates": [
-//     "2025-06-02T00:00:00.000Z",
-//     "2025-06-09T00:00:00.000Z",
-//     "2025-06-16T00:00:00.000Z"
-//   ],
-//   "startDate": "2025-06-02T00:00:00.000Z",
-//   "endDate":   "2025-07-21T00:00:00.000Z",
-//   "startTime": "08:00",
-//   "endTime":   "12:00",
-//   "daysOfWeek": ["Mon", "Wed", "Fri"],
-//   "shift":      "morning",
-//   "price":      199.90
-// }
+
+model PresenceList {
+  id                Int      @id @default(autoincrement())
+  courseName        String?
+  price             Decimal? @db.Decimal(10,2)
+  presence          DateTime[]
+  foul              DateTime[]
+  replacement       DateTime[]
+  observations      String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  generalRegisterId Int
+  generalRegister   GeneralRegister @relation(fields: [generalRegisterId], references: [id], onDelete: Cascade)
+
+  courseClassId     Int
+  courseClass       CourseClass @relation(fields: [courseClassId], references: [id], onDelete: Cascade)
+}

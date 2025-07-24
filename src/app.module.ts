@@ -8,9 +8,10 @@ import { PatientModule } from './patient/patient.module';
 import { CoursesModule } from './courses/courses.module';
 import { CourseClassModule } from './course-class/course-class.module';
 import { TerminusModule } from '@nestjs/terminus';
+import { PresenceListModule } from './presence-list/presence-list.module';
 
 @Module({
-  imports: [TerminusModule, AuthModule, PrismaModule, UserModule, GeneralRegisterModule, PatientModule, CoursesModule, CourseClassModule],
+  imports: [TerminusModule, AuthModule, PrismaModule, UserModule, GeneralRegisterModule, PatientModule, CoursesModule, CourseClassModule, PresenceListModule],
   controllers: [AppController],
 })
 export class AppModule {}
