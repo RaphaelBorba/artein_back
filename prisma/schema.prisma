@@ -192,6 +192,7 @@ model CourseClass {
   workload       String?
   classNumber    String?
   location       String?
+  address        String?
   sessionDates   DateTime[]
   startDate      DateTime?
   endDate        DateTime?

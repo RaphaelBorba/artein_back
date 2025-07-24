@@ -10,7 +10,7 @@ import { CreateCourseClassDto } from './dto/create-course-class.dto';
 import { UpdateCourseClassDto } from './dto/update-course-class.dto';
 
 export interface PaginatedResult<T> {
-  data: T[];
+  records: T[];
   pagination: {
     page: number;
     limit: number;
@@ -35,7 +35,7 @@ export class CourseClassesService {
     const totalPages = Math.ceil(result.total / limit);
     
     return {
-      data: result.data,
+      records: result.data,
       pagination: {
         page,
         limit,

@@ -24,6 +24,10 @@ export class CreateCourseClassDto {
     @IsOptional()
     location: string;
 
+    @IsString()
+    @IsOptional()
+    address: string;
+
     @IsArray()
     @Type(() => Date)
     @IsDate({ each: true })

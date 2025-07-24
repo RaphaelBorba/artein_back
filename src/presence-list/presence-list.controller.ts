@@ -9,13 +9,16 @@ import {
   ParseIntPipe,
   HttpCode,
   HttpStatus,
-  Query
+  Query,
+  UseGuards
 } from '@nestjs/common';
 import { PresenceListService } from './presence-list.service';
 import { CreatePresenceListDto } from './dto/create-presence-list.dto';
 import { UpdatePresenceListDto } from './dto/update-presence-list.dto';
 import { QueryPresenceListDto } from './dto/query-presence-list.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('presence-list')
 export class PresenceListController {
   constructor(private readonly presenceListService: PresenceListService) {}

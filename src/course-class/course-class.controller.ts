@@ -21,7 +21,7 @@ import { UpdateCourseClassDto } from './dto/update-course-class.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 export interface PaginatedResult<T> {
-  data: T[];
+  records: T[];
   pagination: {
     page: number;
     limit: number;
