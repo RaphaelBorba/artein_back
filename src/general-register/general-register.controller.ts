@@ -45,6 +45,11 @@ export class GeneralRegisterController {
     });
   }
 
+  @Get('name-id')
+  getNameAndId() {
+    return this.service.getNameAndId()
+  }
+
   @Get('communication-method')
   getCommunicationMethod() {
     return this.service.getCommunicationMethod()

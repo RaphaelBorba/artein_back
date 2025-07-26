@@ -24,11 +24,11 @@ export interface PaginatedResult<T> {
   records: T[];
   pagination: {
     page: number;
-    limit: number;
-    total: number;
+    pageSize: number;
+    totalCount: number;
     totalPages: number;
-    hasNext: boolean;
-    hasPrevious: boolean;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
   };
 }
 
@@ -55,6 +55,11 @@ export class CourseClassesController {
     }
 
     return this.service.findAll(page, limit, { search, shift });
+  }
+
+  @Get('name-id')
+  getNameAndId() {
+    return this.service.getNameAndId()
   }
 
   @Get(':id')

@@ -119,6 +119,12 @@ export class GeneralRegisterService {
         return this.repository.delete(id);
     }
 
+    async getNameAndId() {
+        const resp = await this.repository.getNameAndId()
+        const newMap = resp.map((row) => ({ value: String(row.id), label: row.fullName }))
+        return newMap
+    }
+
     async getCommunicationMethod() {
         const resp = await this.repository.getCommunicationMethod()
         const newMap = resp.map((row) => ({ value: String(row.id), label: row.name }))

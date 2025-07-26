@@ -59,6 +59,15 @@ export class CourseClassesRepository {
     return this.prisma.courseClass.findUnique({ where: { id } });
   }
 
+   getNameAndId() {
+    return this.prisma.courseClass.findMany({
+      select: {
+        id: true,
+        classNumber: true
+      }
+    })
+  }
+
   create(dto: CreateCourseClassDto): Promise<CourseClass> {
     return this.prisma.courseClass.create({ data: dto });
   }

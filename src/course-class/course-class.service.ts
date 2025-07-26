@@ -13,11 +13,11 @@ export interface PaginatedResult<T> {
   records: T[];
   pagination: {
     page: number;
-    limit: number;
-    total: number;
+    pageSize: number;
+    totalCount: number;
     totalPages: number;
-    hasNext: boolean;
-    hasPrevious: boolean;
+    hasNextPage: boolean;
+    hasPreviousPage: boolean;
   };
 }
 
@@ -38,11 +38,11 @@ export class CourseClassesService {
       records: result.data,
       pagination: {
         page,
-        limit,
-        total: result.total,
+        pageSize: limit,
+        totalCount: result.total,
         totalPages,
-        hasNext: page < totalPages,
-        hasPrevious: page > 1,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
       },
     };
   }
@@ -54,6 +54,12 @@ export class CourseClassesService {
     }
     return item;
   }
+
+      async getNameAndId() {
+        const resp = await this.repo.getNameAndId()
+        const newMap = resp.map((row) => ({ value: String(row.id), label: row.classNumber }))
+        return newMap
+    }
 
   async create(dto: CreateCourseClassDto): Promise<CourseClass> {
     // Validate business logic

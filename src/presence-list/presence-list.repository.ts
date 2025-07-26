@@ -65,6 +65,7 @@ export class PresenceListRepository {
               id: true,
               name: true,
               workload: true,
+              classNumber: true
             }
           }
         },

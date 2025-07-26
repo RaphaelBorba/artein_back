@@ -77,6 +77,15 @@ export class GeneralRegisterRepository {
     return this.prisma.generalRegister.delete({ where: { id } });
   }
 
+  async getNameAndId() {
+    return this.prisma.generalRegister.findMany({
+      select: {
+        id: true,
+        fullName: true
+      }
+    })
+  }
+
   async getCommunicationMethod() {
     return this.prisma.communicationMethod.findMany()
   }

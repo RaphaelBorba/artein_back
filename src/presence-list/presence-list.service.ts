@@ -30,7 +30,22 @@ export class PresenceListService {
   }
 
   async findAll(filters: QueryPresenceListDto) {
-    return await this.presenceListRepository.findAll(filters);
+    const { page, limit } = filters;
+    const { records, totalCount } = await this.presenceListRepository.findAll(filters);
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return {
+      records,
+      pagination: {
+        page,
+        pageSize: limit,
+        totalCount,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+      },
+    };
   }
 
   async findOne(id: number) {
