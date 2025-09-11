@@ -96,6 +96,28 @@ async function main() {
     skipDuplicates: true,
   })
 
+    const forms = [
+    { title: "Curso Introdutório em Mindfulness", slug: "curso_introdutorio_em_mindfulness", path: "/fichas/curso_introdutorio_em_mindfulness" },
+    { title: "P8S em Mindfulness", slug: "p8s_em_mindfulness", path: "/fichas/p8s_em_mindfulness" },
+    { title: "Curso Aprofundamento Mindfulness", slug: "curso_aprofundamento_mindfulness", path: "/fichas/curso_aprofundamento_mindfulness" },
+    { title: "Inscrição Imersão em Mindfulness", slug: "inscricao_imersao_em_mindfulness", path: "/fichas/inscricao_imersao_em_mindfulness" },
+    { title: "Formulário de Inscrição em Eventos", slug: "formulario_de_inscricao_em_eventos", path: "/fichas/formulario_de_inscricao_em_eventos" },
+    { title: "Formulário Aulas Regulares", slug: "formulario_aulas_regulares", path: "/fichas/formulario_aulas_regulares" },
+    { title: "Formulário de Avaliação P8S Mindfulness", slug: "formulario_de_avaliacao_p8s_mindfulness", path: "/fichas/formulario_de_avaliacao_p8s_mindfulness" },
+    { title: "Formulário de Avaliação Curso Aprofundamento em Mindfulness", slug: "formulario_de_avaliacao_curso_aprofundamento_em_mindfulness", path: "/fichas/formulario_de_avaliacao_curso_aprofundamento_em_mindfulness" },
+    { title: "Formulário de Avaliação Curso Introdutório em Mindfulness", slug: "formulario_de_avaliacao_curso_introdutorio_em_mindfulness", path: "/fichas/formulario_de_avaliacao_curso_introdutorio_em_mindfulness" },
+    { title: "Formulário de Ava Imersão em Mindfulness", slug: "formulario_de_ava_imersao_em_mindfulness", path: "/fichas/formulario_de_ava_imersao_em_mindfulness" },
+    { title: "Formulário de Ava", slug: "formulario_de_ava", path: "/fichas/formulario_de_ava" },
+  ];
+
+  for (const f of forms) {
+    await prisma.form.upsert({
+      where: { slug: f.slug },
+      update: { title: f.title, path: f.path },
+      create: { title: f.title, slug: f.slug, path: f.path },
+    });
+  }
+
   console.log('Seeds cadastrados com sucesso!');
 }
 
