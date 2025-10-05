@@ -13,7 +13,7 @@ import { UserRepository } from 'src/user/user.repository';
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'my-secret-key', // Use environment variables
-      signOptions: { expiresIn: '1h' }, // Token expires in 1 hour
+      signOptions: { expiresIn: '16h' }, // Token expires in 1 hour
     }),
   ],
   controllers: [AuthController],
