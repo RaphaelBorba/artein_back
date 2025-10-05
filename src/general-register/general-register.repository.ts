@@ -41,6 +41,9 @@ export class GeneralRegisterRepository {
         receiveInfoMethod: true,
         referralSource: true,
       },
+      orderBy: {
+        id: 'desc',
+      },
     });
   }
 
