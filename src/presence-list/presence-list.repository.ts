@@ -70,7 +70,7 @@ export class PresenceListRepository {
           }
         },
         orderBy: {
-          createdAt: 'desc'
+          courseClassId: 'desc'
         }
       }),
       this.prisma.presenceList.count({ where })

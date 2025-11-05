@@ -64,6 +64,9 @@ export class CourseClassesRepository {
       select: {
         id: true,
         classNumber: true
+      },
+      orderBy: {
+        classNumber: 'desc'
       }
     })
   }
