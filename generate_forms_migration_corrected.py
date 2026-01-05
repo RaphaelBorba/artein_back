@@ -118,17 +118,17 @@ def map_formulario_de_ava_imersao_em_mindfulness(record: dict) -> dict:
 def map_formulario_de_avaliacao_p8s_mindfulness(record: dict) -> dict:
     """Mapeia FormularioDeAvaliacaoP8sMindfulnessI"""
     return {
-        'fullName': record.get('nome_completo'),
-        'birthDate': parse_date(record.get('data_de_nascimento')),
-        'satisfactionLevel': record.get('primeira_pergunta'),
-        'likedMostAndTakeaways': record.get('segunda_pergunta'),
-        'likedLeastSuggestions': record.get('terceira_pergunta'),
-        'personalChange': record.get('quarta_pergunta'),
-        'selfDifference': record.get('quinta_pergunta'),
-        'knowledgeMomentsImportance': record.get('sexta_pergunta'),
-        'tellAFriend': record.get('setima_pergunta'),
-        'benefits': record.get('oitava_pergunta'),
-        'authorizeUse': record.get('nona_pergunta'),
+        'fullName': record.get('nome'),
+        'birthDate': parse_date(record.get('data')),
+        'satisfactionLevel': record.get('nivel_de_satisfacao'),
+        'likedMostAndTakeaways': record.get('primeira_pergunta'),
+        'likedLeastSuggestions': record.get('segunda_pergunta'),
+        'personalChange': record.get('terceira_pergunta'),
+        'selfDifference': record.get('quarta_pergunta'),
+        'knowledgeMomentsImportance': record.get('quinta_pergunta'),
+        'tellAFriend': record.get('sexta_pergunta'),
+        'benefits': record.get('setima_pergunta'),
+        'authorizeUse': record.get('oitava_pergunta'),
     }
 
 def map_formulario_de_avaliacao_curso_aprofundamento_mindfulness(record: dict) -> dict:
@@ -167,8 +167,8 @@ def map_formulario_de_avaliacao_curso_introdutorio_mindfulness(record: dict) -> 
 def map_formulario_de_inscricao_em_eventos(record: dict) -> dict:
     """Mapeia FormularioDeInscricaoEmEventosI"""
     return {
-        'eventName': record.get('evento'),
-        'fullName': record.get('nome_completo'),
+        'eventName': record.get('diga_nos_em_qual_evento_voce_deseja_realizar_sua_participacao_'),
+        'fullName': record.get('nome'),
         'phone': record.get('telefone'),
         'cep': record.get('cep'),
         'address': record.get('endereco'),
@@ -280,7 +280,7 @@ def map_curso_introdutorio_em_mindfulness(record: dict) -> dict:
 def map_inscricao_imersao_em_mindfulness(record: dict) -> dict:
     """Mapeia InscricaoImersaoEmMindfulnessI"""
     return {
-        'fullName': record.get('nome_completo'),
+        'fullName': record.get('nome'),
         'phone': record.get('telefone'),
         'cep': record.get('cep'),
         'address': record.get('endereco'),
