@@ -181,6 +181,28 @@ model Course {
   workload          String?
   price             Decimal?  @db.Decimal(10,2)
 
+  Leads Lead[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Shift {
+  MANHA
+  TARDE
+  NOITE
+}
+
+model Lead {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String?
+  phone        String?
+  location     String?
+  shift        Shift?
+  observations String?
+  courses      Course[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
