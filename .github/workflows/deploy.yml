@@ -60,7 +60,7 @@ jobs:
           rsync -rlt --delete \
             -e "ssh -i $HOME/.ssh/deploy_key -o BatchMode=yes -o StrictHostKeyChecking=yes" \
             dist prisma package.json package-lock.json \
-            "$SSH_USER@$SSH_HOST:releases/back/"
+            "$SSH_USER@$SSH_HOST:/srv/artein-deploy/back/"
 
       - name: Deploy (migrations + restart)
         env:
@@ -68,7 +68,7 @@ jobs:
           SSH_USER: ${{ secrets.SSH_USER }}
         run: |
           ssh -i "$HOME/.ssh/deploy_key" -o BatchMode=yes -o StrictHostKeyChecking=yes \
-            "$SSH_USER@$SSH_HOST" "sudo -n /usr/local/sbin/artein-deploy-back.sh"
+            "$SSH_USER@$SSH_HOST" "sudo -n -u angelicaborba-api-artein /usr/local/sbin/artein-deploy-back.sh"
 
       - name: Health check
         run: |

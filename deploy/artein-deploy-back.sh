@@ -1,45 +1,51 @@
 #!/usr/bin/env bash
-# Deploy do backend (NestJS). Executado como root via `sudo` pelo GitHub Actions.
+# Deploy do backend (NestJS).
+#
+# Executado pelo GitHub Actions como o usuário DONO do site, via
+#   sudo -n -u angelicaborba-api-artein /usr/local/sbin/artein-deploy-back.sh
+# Nenhuma etapa roda como root: npm, prisma e pm2 usam o mesmo usuário que já roda a API.
 #
 # Instalar em /usr/local/sbin (dono root, modo 755) -- ver CICD_SETUP.md.
-# Este arquivo NÃO deve ser editável pelo usuário de deploy: ele é a fronteira
-# entre "quem faz upload da release" e "quem tem permissão de root".
+# O usuário de deploy consegue executar este arquivo, mas não alterá-lo.
 set -euo pipefail
 
-STAGE=/home/artein-deploy/releases/back
+APP_USER=angelicaborba-api-artein
+STAGE=/srv/artein-deploy/back
 APP=/home/angelicaborba-api-artein/htdocs/api-artein.angelicaborba.com
 PM2_NAME=nestjs-api
 HEALTH_URL=http://127.0.0.1:3001/health
-STATE_DIR=/var/lib/artein-deploy
 
-export HOME=/root
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export HOME=/home/angelicaborba-api-artein
+export PATH=/usr/local/bin:/usr/bin:/bin
 
+[ "$(id -un)" = "$APP_USER" ] || { echo "Este script deve rodar como $APP_USER" >&2; exit 1; }
 [ -f "$STAGE/dist/src/main.js" ] || { echo "Release incompleta em $STAGE" >&2; exit 1; }
 
-mkdir -p "$STATE_DIR"
-exec 9>/var/lock/artein-deploy-back.lock
+exec 9>/tmp/artein-deploy-back.lock
 flock -n 9 || { echo "Outro deploy do backend em andamento" >&2; exit 1; }
 
-# Falha cedo, antes de alterar qualquer arquivo, se o processo não estiver no PM2 do root.
+# Falha cedo, antes de alterar qualquer arquivo, se o processo não estiver no PM2 deste usuário.
 if ! pm2 describe "$PM2_NAME" >/dev/null 2>&1; then
-  echo "Processo '$PM2_NAME' não encontrado no PM2 do root. Nada foi alterado." >&2
+  echo "Processo '$PM2_NAME' não encontrado no PM2 de $APP_USER. Nada foi alterado." >&2
   exit 1
 fi
 
 cd "$APP"
 
 echo "==> Atualizando manifestos e schema do Prisma"
-install -m 644 -o root -g root "$STAGE/package.json" "$STAGE/package-lock.json" "$APP/"
-rsync -rlt --delete --chown=root:root "$STAGE/prisma/" "$APP/prisma/"
+need_install=1
+if cmp -s "$STAGE/package-lock.json" "$APP/package-lock.json" && [ -f "$APP/node_modules/.deploy-ok" ]; then
+  need_install=0
+fi
+install -m 644 "$STAGE/package.json" "$STAGE/package-lock.json" "$APP/"
+rsync -rlt --delete "$STAGE/prisma/" "$APP/prisma/"
 
 echo "==> Dependências"
-new_hash=$(sha256sum "$APP/package-lock.json" | cut -d' ' -f1)
-old_hash=$(cat "$STATE_DIR/back.lock.sha256" 2>/dev/null || true)
-if [ "$new_hash" != "$old_hash" ] || [ ! -d "$APP/node_modules" ]; then
-  # --ignore-scripts: scripts de instalação de terceiros não rodam como root.
+if [ "$need_install" = 1 ]; then
+  rm -f "$APP/node_modules/.deploy-ok"
+  # --ignore-scripts: scripts de instalação de terceiros não rodam.
   npm ci --no-audit --no-fund --ignore-scripts
-  echo "$new_hash" > "$STATE_DIR/back.lock.sha256"
+  touch "$APP/node_modules/.deploy-ok"
 else
   echo "package-lock.json inalterado, pulando npm ci"
 fi
@@ -51,7 +57,7 @@ echo "==> Prisma generate + migrate deploy"
 echo "==> Trocando dist (backup em dist.prev)"
 rm -rf "$APP/dist.prev"
 if [ -d "$APP/dist" ]; then mv "$APP/dist" "$APP/dist.prev"; fi
-rsync -rlt --chown=root:root "$STAGE/dist/" "$APP/dist/"
+rsync -rlt "$STAGE/dist/" "$APP/dist/"
 
 echo "==> Reiniciando $PM2_NAME"
 pm2 restart "$PM2_NAME" --update-env
