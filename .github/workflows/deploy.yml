@@ -16,7 +16,8 @@ permissions:
   contents: read
 
 env:
-  # Manter alinhado com `node -v` da VPS.
+  # Versão usada só para BUILDAR no runner. A VPS executa o resultado com Node 18.19.1
+  # (o JS gerado pelo tsc é o mesmo); as dependências são instaladas lá, no Node da VPS.
   NODE_VERSION: '22'
   API_HEALTH_URL: https://api-artein.angelicaborba.com/health
 
