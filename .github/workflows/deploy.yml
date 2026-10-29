@@ -1,0 +1,77 @@
+name: Deploy API
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+  workflow_dispatch:
+
+# Nunca dois deploys ao mesmo tempo; o segundo espera o primeiro terminar.
+concurrency:
+  group: deploy-api
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  # Versão usada só para BUILDAR no runner. A VPS executa o resultado com Node 18.19.1
+  # (o JS gerado pelo tsc é o mesmo); as dependências são instaladas lá, no Node da VPS.
+  NODE_VERSION: '22'
+  API_HEALTH_URL: https://api-artein.angelicaborba.com/health
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate Prisma client
+        run: npx prisma generate
+
+      - name: Build
+        run: npm run build
+
+      - name: Configure SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: Upload release to the server
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          rsync -rlt --delete \
+            -e "ssh -i $HOME/.ssh/deploy_key -o BatchMode=yes -o StrictHostKeyChecking=yes" \
+            dist prisma package.json package-lock.json \
+            "$SSH_USER@$SSH_HOST:/srv/artein-deploy/back/"
+
+      - name: Deploy (migrations + restart)
+        env:
+          SSH_HOST: ${{ secrets.SSH_HOST }}
+          SSH_USER: ${{ secrets.SSH_USER }}
+        run: |
+          ssh -i "$HOME/.ssh/deploy_key" -o BatchMode=yes -o StrictHostKeyChecking=yes \
+            "$SSH_USER@$SSH_HOST" "sudo -n -u angelicaborba-api-artein /usr/local/sbin/artein-deploy-back.sh"
+
+      - name: Health check
+        run: |
+          curl --fail --silent --show-error \
+            --retry 6 --retry-delay 5 --retry-connrefused \
+            "$API_HEALTH_URL"
